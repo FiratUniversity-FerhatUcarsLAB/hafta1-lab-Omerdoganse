@@ -1,4 +1,79 @@
-Öğrenci No:
-AD-SOYAD:
+Öğrenci No:250541101
+AD-SOYAD: Ömer Doğan
 
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+
+Mısır Gevreği algoritması 
+// Başlangıç Değişkenleri ve Sabitler
+// Toplam Karışım Miktarı (Örneğin, 100 birim)
+SABIT TOPLAM_MIKTAR = 100;
+
+// Kullanıcı Giriş Değişkenleri
+TAMSAYI sekerTercihi;     // 1'den 10'a kadar (Mısır Gevreği Oranı)
+TAMSAYI saglikTercihi;    // 1'den 10'a kadar (Yulaf Oranı)
+TAMSAYI lezzetTercihi;    // 1'den 10'a kadar (Granola Oranı)
+
+// Karışım Oranları Değişkenleri
+GERÇEK misirGevregiOrani;
+GERÇEK yulafOrani;
+GERÇEK granolaOrani;
+
+// Karışım Miktarları Değişkenleri (Toplam 100 birim olacak)
+GERÇEK misirGevregiMiktari;
+GERÇEK yulafMiktari;
+GERÇEK granolaMiktari;
+
+---
+
+// 1. ADIM: Kullanıcı Girişlerini Alma
+
+YAZDIR("Karışımdaki şeker miktarını ne kadar istiyorsunuz? (1:Çok az - 10:Çok fazla)");
+sekerTercihi = KULLANICIDAN_GIRIS_AL();
+
+YAZDIR("Karışımın ne kadar sağlıklı olmasını istiyorsunuz? (1:Az sağlıklı - 10:Çok sağlıklı)");
+saglikTercihi = KULLANICIDAN_GIRIS_AL();
+
+YAZDIR("Karışımın tadının ne kadar güzel olmasını istiyorsunuz? (1:Az lezzetli - 10:Çok lezzetli)");
+lezzetTercihi = KULLANICIDAN_GIRIS_AL();
+
+---
+
+// 2. ADIM: Oranların Hesaplanması
+
+// Not: Tercihlerin toplamı 10-30 arasında olacaktır.
+GERÇEK toplamTercihPuani = (GERÇEK)sekerTercihi + (GERÇEK)saglikTercihi + (GERÇEK)lezzetTercihi;
+
+// Her bir bileşenin oranı, tercih puanının toplam puana bölünmesiyle hesaplanır.
+// Böylece üç oranının toplamı her zaman 1 (veya %100) olacaktır.
+
+// a) Mısır Gevreği Oranı (Şeker miktarı ile doğru orantılı)
+misirGevregiOrani = (GERÇEK)sekerTercihi / toplamTercihPuani;
+
+// b) Yulaf Oranı (Sağlıklılık ile doğru orantılı)
+yulafOrani = (GERÇEK)saglikTercihi / toplamTercihPuani;
+
+// c) Granola Oranı (Lezzet ile doğru orantılı)
+granolaOrani = (GERÇEK)lezzetTercihi / toplamTercihPuani;
+
+---
+
+// 3. ADIM: Karışım Miktarlarının Belirlenmesi
+
+// Hesaplanan oranlar toplam miktar ile çarpılarak her bir bileşenin miktarı bulunur.
+misirGevregiMiktari = misirGevregiOrani * TOPLAM_MIKTAR;
+yulafMiktari = yulafOrani * TOPLAM_MIKTAR;
+granolaMiktari = granolaOrani * TOPLAM_MIKTAR;
+
+// Kontrol: misirGevregiMiktari + yulafMiktari + granolaMiktari = 100 olmalıdır.
+
+---
+
+// 4. ADIM: Sonuçların Gösterilmesi
+
+YAZDIR("\n--- Önerilen Karışım Oranları (" + TOPLAM_MIKTAR + " birim için) ---");
+YAZDIR("Mısır Gevreği Miktarı: " + misirGevregiMiktari + " birim (Oran: " + (misirGevregiOrani * 100) + "%)");
+YAZDIR("Yulaf Miktarı: " + yulafMiktari + " birim (Oran: " + (yulafOrani * 100) + "%)");
+YAZDIR("Granola Miktarı: " + granolaMiktari + " birim (Oran: " + (granolaOrani * 100) + "%)");
+YAZDIR("-------------------------------------------------------");
+
+// BİTİR

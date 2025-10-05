@@ -1,4 +1,44 @@
-Öğrenci No:
-AD-SOYAD:
+Öğrenci No:250541101
+AD-SOYAD: Ömer Doğan 
 
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+
+N kişi için adil pasta paylaşımı
+// N kişi için eşit pasta paylaşımı (yüzdelik sonuç gösterimi)
+// Divide & Conquer mantığıyla Java Pseudocode
+
+BEGIN
+
+    INPUT N               // kişi sayısı
+    INPUT pastaBoyutu     // pastanın toplam büyüklüğü (örneğin gram veya cm^2)
+
+    FUNCTION paylastir(pasta, kisiSayisi):
+        // Edge case 1: tek kişi kaldı → bütün pasta ona verilir
+        IF kisiSayisi == 1 THEN
+            yuzde = (pasta / pastaBoyutu) * 100
+            PRINT "Kişi payı: " + pasta + " birim (" + yuzde + "%)"
+            RETURN
+
+        // Edge case 2: pasta yok
+        IF pasta == 0 THEN
+            PRINT "Paylaşacak pasta yok."
+            RETURN
+
+        // Normal durumda ikiye böl
+        leftPasta = pasta / 2
+        rightPasta = pasta - leftPasta
+
+        leftKisi = kisiSayisi / 2
+        rightKisi = kisiSayisi - leftKisi
+
+        // Recursive çağrı
+        paylastir(leftPasta, leftKisi)
+        paylastir(rightPasta, rightKisi)
+    END FUNCTION
+
+    // Başlat
+    paylastir(pastaBoyutu, N)
+
+    PRINT "Tüm kişiler eşit paylarını aldı."
+
+END

@@ -1,4 +1,141 @@
-Öğrenci No:
-AD-SOYAD:
+Öğrenci No:250541101
+AD-SOYAD: Ömer Doğan
 
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+
+Tic Tac Toe
+﻿// Sabitler
+SABIT Oyuncu_X = 'X';
+SABIT Oyuncu_O = 'O';
+SABIT Bos_Kare = ' ';
+
+// =======================================================
+// ANA FONKSIYON: En iyi hamleyi bulan metod (AI Tarafından Kullanılır)
+// =======================================================
+
+SINIF TicTacToeAI {
+    
+    // Tahtanın boyutunu 3x3 kabul ediyoruz
+    YONTEM HamleBul(char[][] tahta, char aiOyuncu) {
+        int enYuksekSkor = -SONSUZLUK; // Java'da Integer.MIN_VALUE gibi
+        int enIyiSatir = -1;
+        int enIyiSutun = -1;
+        
+        // Tahtadaki tüm boş kareleri kontrol et
+        DONGU (int satir = 0; satir < 3; satir++) {
+            DONGU (int sutun = 0; sutun < 3; sutun++) {
+                
+                EĞER (tahta[satir][sutun] == Bos_Kare) {
+                    
+                    // 1. Hamleyi dene
+                    tahta[satir][sutun] = aiOyuncu;
+                    
+                    // 2. Minimax ile bu hamlenin skorunu hesapla
+                    int skor = Minimax(tahta, 0, DigerOyuncu(aiOyuncu)); 
+                    
+                    // 3. Hamleyi geri al (Özyinelemeli ağaçta kalıcı değişiklik yapmamak için)
+                    tahta[satir][sutun] = Bos_Kare;
+                    
+                    // 4. En iyi skoru güncelle
+                    EĞER (skor > enYuksekSkor) {
+                        enYuksekSkor = skor;
+                        enIyiSatir = satir;
+                        enIyiSutun = sutun;
+                    }
+                }
+            }
+        }
+        
+        // En iyi hamlenin koordinatlarını döndür (örneğin int dizisi olarak)
+        DON satır, sütun
+    }
+
+// =======================================================
+// MINIMAX ALGORITMASI: Karar Verme Mantığı
+// =======================================================
+
+    // Derinlik (depth): Kaç hamle sonrasına baktığımızı gösterir.
+    // Oyuncu (player): Sırada hamle yapacak oyuncu.
+    YONTEM Minimax(char[][] tahta, int derinlik, char simdikiOyuncu) {
+        
+        // 1. TEMEL DURUM (Oyun sonu kontrolü)
+        
+        // X Kazanırsa (AI'ın kendisi)
+        EĞER (KazanmaDurumuKontrol(tahta, Oyuncu_X)) {
+            DON 10 - derinlik; // Kazanmayı erken yapmak daha iyidir (+10 - az derinlik)
+        }
+        
+        // O Kazanırsa (Rakip)
+        EĞER (KazanmaDurumuKontrol(tahta, Oyuncu_O)) {
+            DON -10 + derinlik; // Kaybetmeyi geciktirmek daha iyidir (-10 + çok derinlik)
+        }
+        
+        // Tahta Doluysa (Berabere)
+        EĞER (TahtaDolu(tahta)) {
+            DON 0;
+        }
+
+        // 2. ÖZYİNELEMELİ ADIMLAR
+        
+        // Eğer sıra AI'ın (X) ise (Skoru maksimize etme)
+        EĞER (simdikiOyuncu == Oyuncu_X) {
+            int enYuksekSkor = -SONSUZLUK;
+            
+            DONGU (boş kareler) {
+                // Hamleyi dene
+                tahta[satir][sutun] = Oyuncu_X;
+                
+                // Özyinelemeli çağrı
+                int skor = Minimax(tahta, derinlik + 1, Oyuncu_O); 
+                
+                // Hamleyi geri al
+                tahta[satir][sutun] = Bos_Kare;
+                
+                // Maksimize et
+                enYuksekSkor = MAKS(enYuksekSkor, skor);
+            }
+            DON enYuksekSkor;
+        } 
+        // Eğer sıra Rakibin (O) ise (Skoru minimize etme)
+        ELSE {
+            int enDusukSkor = SONSUZLUK;
+            
+            DONGU (boş kareler) {
+                // Hamleyi dene
+                tahta[satir][sutun] = Oyuncu_O;
+                
+                // Özyinelemeli çağrı
+                int skor = Minimax(tahta, derinlik + 1, Oyuncu_X); 
+                
+                // Hamleyi geri al
+                tahta[satir][sutun] = Bos_Kare;
+                
+                // Minimize et
+                enDusukSkor = MIN(enDusukSkor, skor);
+            }
+            DON enDusukSkor;
+        }
+    }
+}
+
+
+// =======================================================
+// YARDIMCI FONKSIYONLAR (Kısaltıldı)
+// =======================================================
+
+YONTEM KazanmaDurumuKontrol(char[][] tahta, char oyuncu) {
+    // 8 farklı kazanma koşulunu kontrol eder: 3 yatay, 3 dikey, 2 çapraz.
+    // Örnek: (tahta[0][0] == oyuncu && tahta[0][1] == oyuncu && tahta[0][2] == oyuncu) DÖN DOĞRU
+    // ...
+    DÖN YANLIŞ; 
+}
+
+YONTEM TahtaDolu(char[][] tahta) {
+    // Tahtada hiç Bos_Kare kalıp kalmadığını kontrol eder.
+    // DÖN DOĞRU/YANLIŞ;
+}
+
+YONTEM DigerOyuncu(char oyuncu) {
+    // Oyuncu_X ise Oyuncu_O'yu, Oyuncu_O ise Oyuncu_X'i döndürür.
+    // DÖN diğer oyuncu;
+}

@@ -1,4 +1,62 @@
-Öğrenci No:
-AD-SOYAD:
+Öğrenci No: 250541101    
+AD-SOYAD: Ömer Doğan
 
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+
+Telefon Rehberinde alfabetik sıralama 
+// Kisi veri yapısı
+class Kisi {
+    String isim;
+    String telefon;
+}
+
+// Telefon rehberi (Kisi dizisi)
+Kisi[] rehber = [
+    {"Zeynep", "0555 123 45 67"},
+    {"Ali", "0533 987 65 43"},
+    {"Mehmet", "0506 111 22 33"},
+    {"Ayşe", "0544 333 22 11"}
+];
+
+// 1. BUBBLE SORT: Rehberi isimlere göre alfabetik sıraya sok
+function siralaAlfabetik(rehber) {
+    for (i = 0; i < rehber.length - 1; i++) {
+        for (j = 0; j < rehber.length - i - 1; j++) {
+            if (rehber[j].isim > rehber[j + 1].isim) {
+                // Swap işlemi
+                temp = rehber[j];
+                rehber[j] = rehber[j + 1];
+                rehber[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// 2. BINARY SEARCH: Alfabetik sıralı rehberde isim arama
+function araIsmeGore(rehber, arananIsim) {
+    bas = 0;
+    son = rehber.length - 1;
+
+    while (bas <= son) {
+        orta = (bas + son) / 2;
+        if (rehber[orta].isim == arananIsim) {
+            return rehber[orta]; // Kişi bulundu
+        } else if (rehber[orta].isim < arananIsim) {
+            bas = orta + 1;
+        } else {
+            son = orta - 1;
+        }
+    }
+
+    return null; // Bulunamadı
+}
+
+// KULLANIM
+siralaAlfabetik(rehber); // Önce rehberi sırala
+kisi = araIsmeGore(rehber, "Ali");
+
+if (kisi != null) {
+    print(kisi.isim + ": " + kisi.telefon);
+} else {
+    print("Kişi bulunamadı.");
+}

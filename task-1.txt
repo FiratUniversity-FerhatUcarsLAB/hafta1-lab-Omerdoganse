@@ -1,4 +1,118 @@
-Öğrenci No:
-AD-SOYAD:
+Öğrenci No:250541101
+AD-SOYAD: Ömer Doğan
 
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+
+Sınav çalışma planı oluşturma algoritması
+ALGORITMA SinavCalismaPlaniOlustur
+  // GEREKLILIKLER / GIRDILER: Kullanıcıdan alınması gereken veriler
+  // Dersin Adı ve Tahmini Gerekli Saat miktarı
+  Map<String, Integer> derslerVeSaatIhtiyaci
+  Tarih sinavTarihi
+  Integer bugununTarihi
+  Integer gunlukMaxCalismaSaati // Kullanıcının günlük ayırabileceği maksimum saat
+
+  // DEGISKENLER
+  Integer toplamGerekliSaat = 0
+  Integer toplamMusaitGun
+  Integer toplamMusaitSaat
+  List<Object> calismaPlani // { Tarih, List<String> Dersler } yapısında olacak
+  Integer KALAN_CALISMA_SAATI = 0
+  Integer CALISMA_BLOK_SAATI = 2 // Çalışma bloklarını 2 saat olarak belirliyoruz (Tekrar eden blok)
+
+  // -----------------------------------------------------
+  // ADIM 1: Girdi Toplama ve Hesaplama
+  // -----------------------------------------------------
+  BASLAT
+
+    // Toplam Gerekli Çalışma Saatini Hesapla (Tekrar Eden İşlem)
+    FOR herDers in derslerVeSaatIhtiyaci DONGUSU
+      toplamGerekliSaat = toplamGerekliSaat + derslerVeSaatIhtiyaci.get(herDers)
+    SON // FOR DONGUSU SONU
+
+    KALAN_CALISMA_SAATI = toplamGerekliSaat
+
+    // Toplam Müsait Zamanı Hesapla
+    toplamMusaitGun = HesaplaGunFarki(bugununTarihi, sinavTarihi)
+    toplamMusaitSaat = toplamMusaitGun * gunlukMaxCalismaSaati
+
+    // -----------------------------------------------------
+    // ADIM 2: Fizibilite Kontrolü (Koşullu Durum)
+    // -----------------------------------------------------
+    EGER (toplamGerekliSaat > toplamMusaitSaat)
+      Integer farkSaat = toplamGerekliSaat - toplamMusaitSaat
+      GOSTER("UYARI: Planlanan saatler için yeterli zaman yok. " + farkSaat + " saatlik ek süre gerekli.")
+      GOSTER("Günlük çalışma süresi otomatik olarak ayarlanıyor.")
+      
+      // Gerekli süreye ulaşmak için günlük saati artırma
+      gunlukMaxCalismaSaati = gunlukMaxCalismaSaati + (farkSaat / toplamMusaitGun) + 1 
+      GOSTER("Yeni Günlük Çalışma Saati: " + gunlukMaxCalismaSaati)
+    DEGILSE
+      GOSTER("Çalışma planınız mevcut zamanınıza uygundur.")
+    BITIR // EGER SONU
+
+    // -----------------------------------------------------
+    // ADIM 3: Dersleri Önceliklendirme
+    // -----------------------------------------------------
+    // En çok saate ihtiyaç duyan dersler en üste gelecek şekilde sırala (Büyükten küçüğe)
+    Map<String, Integer> oncelikliDersler = SiralaMapByValue(derslerVeSaatIhtiyaci, AZALAN)
+
+    // -----------------------------------------------------
+    // ADIM 4: Günlük Planı Oluşturma (Ana Tekrar Eden İşlem)
+    // -----------------------------------------------------
+    Tarih mevcutGun = bugununTarihi
+
+    WHILE (mevcutGun <= sinavTarihi VE KALAN_CALISMA_SAATI > 0) DONGUSU
+      Integer gunlukKalanSaat = gunlukMaxCalismaSaati
+      List<String> gunlukDersProgrami
+
+      // Koşullu Durum: Her 7 günde bir genel tekrar veya deneme sınavı günü ata
+      EGER (mevcutGun % 7 == 0)
+        gunlukDersProgrami.EKLE("GENEL TEKRAR VE DENEME SINAVI")
+        gunlukKalanSaat = 0 // Tekrar gününde ders ataması yapma
+      BITIR // EGER SONU
+
+      // Günlük saatler dolana kadar ders ataması yap (İç Tekrar Eden İşlem)
+      FOR herDers in oncelikliDersler DONGUSU
+        DersAdi = herDers.key
+        IhtiyacDuyulanSaat = herDers.value
+
+        // Koşullu Durum: Ders için çalışılacak saat kaldıysa VE günlük limit dolmadıysa
+        EGER (IhtiyacDuyulanSaat > 0 VE gunlukKalanSaat >= CALISMA_BLOK_SAATI)
+          Integer atanacakSaat = CALISMA_BLOK_SAATI // Çalışma bloğu kadar saat ata
+          
+          // Koşullu Durum: Dersin bitmesine az kaldıysa, kalan saati ata
+          EGER (atanacakSaat > IhtiyacDuyulanSaat)
+            atanacakSaat = IhtiyacDuyulanSaat
+          BITIR // EGER SONU
+
+          // Atama Yap ve Saatleri Güncelle
+          gunlukDersProgrami.EKLE(DersAdi + " (" + atanacakSaat + " saat)")
+          
+          // Güncelleme İşlemleri
+          gunlukKalanSaat = gunlukKalanSaat - atanacakSaat
+          oncelikliDersler.UPDATE(DersAdi, IhtiyacDuyulanSaat - atanacakSaat)
+          KALAN_CALISMA_SAATI = KALAN_CALISMA_SAATI - atanacakSaat
+        BITIR // EGER SONU
+
+        // Koşullu Durum: Günlük çalışma limiti dolduysa
+        EGER (gunlukKalanSaat < CALISMA_BLOK_SAATI)
+          KIRIL // İç döngüyü bitir, bir sonraki güne geç
+        BITIR // EGER SONU
+      SON // İÇ FOR DONGUSU SONU (Dersler)
+
+      // Günlük planı kaydet ve tarihi ilerlet
+      calismaPlani.EKLE({gun: mevcutGun, program: gunlukDersProgrami})
+      mevcutGun = mevcutGun + 1
+
+    SON // WHILE DONGUSU SONU (Günler)
+
+    // -----------------------------------------------------
+    // ADIM 5: Sonucu Gösterme
+    // -----------------------------------------------------
+    GOSTER("--- OLUŞTURULAN ÇALIŞMA PLANI ---")
+    FOR herGunPlani in calismaPlani DONGUSU
+      GOSTER(herGunPlani.gun + " : " + herGunPlani.program)
+    SON
+
+  BITIR // ALGORITMA SONU
